@@ -15,13 +15,16 @@ class Login(TemplateView):
     form_class = LoginForm
     template_name = "login.html"
 
+    def get(self, request):
+        return render(request,self.template_name,{'form':self.form_class})
+
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
             username = request.POST['username']
             password = request.POST['password']
             member_details = Member.objects.get(username=username)
-            if password == Member.password:
+            if password == member_details.password:
                 return redirect('/home')
             else:
                 return render(request,self.template_name,{'form':form})
