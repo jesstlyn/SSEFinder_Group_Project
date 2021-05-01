@@ -1,0 +1,15 @@
+
+<h1><u> Adding New Event... </u></h1>
+<div>
+    <form action="{% url 'addNewCase' %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button style="float: left" type="submit"> Save and Add More </button>
+    </form>    
+    <form action="{% url 'homepage' %}" method="POST">
+        <button type="submit"> FINISH </button>
+    </form>
+    <form action="homepage/">
+        <button type="submit"> Cancel </button>
+    </form>
+</div>
