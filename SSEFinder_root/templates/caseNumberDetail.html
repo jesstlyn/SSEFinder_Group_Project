@@ -1,0 +1,27 @@
+<html>
+<head>
+
+</head>
+<body>
+<h1> Case Number Detail</h1>
+
+<div>
+</div>
+
+<h2>{{message}}</h2>
+<h3>{{caseNumber}} </h3>
+<h3>{{personName}}</h3>
+<h3>{{identityDocumentNumber}}</h3>
+<h3>{{birthDate}}</h3>
+<h3>{{symptomsOnsetDate}}</h3>
+<h3>{{infectionConfirmationDate}}</h3>
+    <form action="{% url 'searchCaseNumber' %}" class='searchCaseNumber'>
+        <input type='submit' value='Search Case Number'>
+    </form>
+
+    <form action="{% url 'home-page' %}" class='home-page'>
+        <input type='submit' value='Home'>
+    </form>
+
+</body>
+</html>
