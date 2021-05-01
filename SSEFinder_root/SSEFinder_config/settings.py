@@ -56,7 +56,11 @@ ROOT_URLCONF = 'SSEFinder_config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+<<<<<<< HEAD
         'DIRS': [os.path.join(BASE_DIR),'templates'],
+=======
+        'DIRS': [os.path.join(BASE_DIR), 'templates'],
+>>>>>>> 012aa7ce8d8d37fa845485c23259405dd1746a32
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

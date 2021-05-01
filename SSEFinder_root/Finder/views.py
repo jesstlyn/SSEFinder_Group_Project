@@ -1,9 +1,13 @@
-from django.shortcuts import render
 from django import forms
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render,redirect
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 from Finder.models import Member
+from django.contrib import messages
+
+class homePage(TemplateView):
+    template_name = 'homePage.html'
+
 
 class LoginForm(forms.ModelForm):
     class Meta:
