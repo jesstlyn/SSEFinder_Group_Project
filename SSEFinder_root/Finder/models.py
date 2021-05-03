@@ -20,9 +20,9 @@ class Case(models.Model):
 class Event(models.Model):
     venueName = models.CharField(max_length=200)
     venueLocation = models.CharField(max_length=200)
-    venueAddress = models.CharField(max_length=200)
-    venueXCoordinates = models.DecimalField(max_digits=10, decimal_places=10)
-    venueYCoordinates = models.DecimalField(max_digits=10, decimal_places=10)
+    venueAddress = models.CharField(max_length=200, null='True')
+    venueXCoordinates = models.DecimalField(max_digits=20, decimal_places=5, null='True')
+    venueYCoordinates = models.DecimalField(max_digits=20, decimal_places=5, null='True')
     eventDate = models.DateField()
     eventDescriptipn = models.CharField(max_length=200)
     numberOfPeople = models.IntegerField()

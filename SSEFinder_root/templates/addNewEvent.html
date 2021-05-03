@@ -7,6 +7,7 @@
         <button style="float: left" type="submit"> Save and Add More </button>
     </form>    
     <form action="{% url 'home-page' %}" method="POST">
+        {% csrf_token %}    
         <button type="submit"> FINISH </button>
     </form>
     <form action="{% url 'home-page' %}">
