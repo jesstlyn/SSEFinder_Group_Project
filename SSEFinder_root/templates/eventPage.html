@@ -4,12 +4,12 @@
     <li>{{day}} 
     <ul>
         {% for event in events %}
-        <li>{{ event.venueName}}</li>
-        <li>{{ event.venueLocation}}</li>
-        <li>{{ event.venueAddress}}</li>
-        <li>{{ event.venueXCoordinates}}</li>
-        <li>{{ event.venueYCoordinates}}</li>
-        <li>{{ event.eventDescriptipn}}</li>
+        <li>Venue Name: {{ event.venueName}}</li>
+        <li>Venue Location: {{ event.venueLocation}}</li>
+        <li>Venue Address: {{ event.venueAddress}}</li>
+        <li>X : {{ event.venueXCoordinates}}</li>
+        <li>Y : {{ event.venueYCoordinates}}</li>
+        <li>Description : {{ event.eventDescriptipn}}</li>
         {% endfor %}
     </ul>
     </li>
@@ -17,3 +17,4 @@
     <li>No order yet.</li>
     {% endfor %}
 </ul>
+
