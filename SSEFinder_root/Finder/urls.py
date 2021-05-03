@@ -8,4 +8,6 @@ urlpatterns = [
     path('addNewEvent/', views.AddNewEvent.as_view(),name='addNewEvent-page'),
     path('searchCaseNumber/', views.searchCaseNumber.as_view(), name='searchCaseNumber'),
     path('caseNumberDetail/', views.caseNumberDetail.as_view(), name='caseNumberDetail'),
+    path('searchEvent/', views.SearchEvent.as_view(),name='searchEvent'),
+    path('eventDetail/', views.EventDetail.as_view(), name='eventDetail'),
     ]
