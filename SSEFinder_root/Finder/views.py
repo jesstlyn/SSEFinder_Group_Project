@@ -4,6 +4,7 @@ from django.shortcuts import render,redirect
 from django.views.generic import TemplateView, View
 from Finder.models import Member, Case, Event
 from django.contrib import messages
+import datetime
 import json
 import sys
 
@@ -151,27 +152,28 @@ class SearchEvent(TemplateView):
 class EventDetail(TemplateView):
     model = Event
     template_name = 'eventPage.html'
+
+
     def get_context_data(self, **kwargs):
         startdate = self.request.GET.get('startdate')
         enddate = self.request.GET.get('enddate')
+        gap = enddate - startdate
+        date_list = []
+        for day in range(gap):
+            new_date = startdate + datetime.timedelta(days = day)
+            date_list.append(new_date)
+        
         context = super().get_context_data(**kwargs)
 
-        try :
-            caseInfo = Case.objects.get(caseNumber = query)
-        except:
-            caseInfo = ''
-
-        if (caseInfo == ''):
-            context['message'] = "Data Not Found. Please select another location!"
-        else:
-            caseInfo = Case.objects.get(caseNumber = query)
-            context['message'] = "Data Not Found. Please select another location!"
-            context['caseNumber'] ="Showing details of case number " + caseInfo.caseNumber
-            context['personName'] ="Name: " + caseInfo.personName
-            context['identityDocumentNumber'] ="ID Number: " + caseInfo.identityDocumentNumber
-            context['birthDate'] ="Birth Date: " + caseInfo.birthDate
-            context['symptomsOnsetDate'] ="Symptoms Onset Date: " + caseInfo.symptomsOnsetDate
-            context['infectionConfirmationDate'] ="Infection Confirmation Date: " + caseInfo.infectionConfirmationDate
+        events = {}
+        for day in date_list:
+            try:
+                events_in_that_day = Events.objects.filter(eventDate = day)
+                events[day] = events_in_that_day
+            except:
+                pass
+        
+        context['event_list'] = events 
 
         return context
 
