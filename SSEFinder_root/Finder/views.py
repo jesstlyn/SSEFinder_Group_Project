@@ -4,6 +4,7 @@ from django.shortcuts import render,redirect
 from django.views.generic import TemplateView, View
 from Finder.models import Member, Case, Event
 from django.contrib import messages
+import datetime
 import json
 import sys
 
@@ -154,10 +155,16 @@ class EventDetail(TemplateView):
     def get_context_data(self, **kwargs):
         startdate = self.request.GET.get('startdate')
         enddate = self.request.GET.get('enddate')
+        gap = enddate - startdate
+        date_list = []
+        for day in range(gap):
+            new_date = startdate + datetime.timedelta(days = day)
+            date_list.append(new_date)
+        
         context = super().get_context_data(**kwargs)
 
         try :
-            caseInfo = Case.objects.get(caseNumber = query)
+            eventDetails = Case.objects.get(caseNumber = query)
         except:
             caseInfo = ''
 
