@@ -157,6 +157,8 @@ class EventDetail(TemplateView):
     def get_context_data(self, **kwargs):
         startdate = self.request.GET.get('startdate')
         enddate = self.request.GET.get('enddate')
+        start = datetime.fromisoformat(startdate).date()
+        end = datetime.fromisoformat(enddate).date()
         gap = datetime.fromisoformat(enddate) - datetime.fromisoformat(startdate)
         date_list = []
         for day in range(0,gap.days):
@@ -167,14 +169,23 @@ class EventDetail(TemplateView):
 
         events = {}
         for day in date_list:
+            date_of_event = day.date()
+            print(date_of_event)
+            print(type(date_of_event))
             try:
-                events_in_that_day = Events.objects.filter(eventDate = day)
-                events[day] = events_in_that_day
+                events_in_that_day = Event.objects.filter(eventDate = date_of_event)
+                print(events_in_that_day)
+                print(type(events_in_that_day))
+                date_string = date_of_event.strftime("%Y-%m-%d")
+                events[date_string] = events_in_that_day
             except:
-                pass
+                continue
+        # events = Event.objects.filter(eventDate = [start,end])
         
         context['event_list'] = events 
-
+        context['startdate'] = startdate
+        context['enddate'] = enddate
+        print(events)
         return context
 
 
