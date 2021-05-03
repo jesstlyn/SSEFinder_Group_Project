@@ -1,0 +1,12 @@
+
+<h1><u> Creating Account... </u></h1>
+<div>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button style="float: left" type="submit"> Create </button>
+    </form>    
+    <form action="{% url 'login-page' %}">
+        <button type="submit"> Cancel </button>
+    </form>
+</div>

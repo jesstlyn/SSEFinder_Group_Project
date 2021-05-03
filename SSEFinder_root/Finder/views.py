@@ -4,6 +4,7 @@ from django.shortcuts import render,redirect
 from django.views.generic import TemplateView, View
 from Finder.models import Member, Case, Event
 from django.contrib import messages
+from datetime import datetime,timedelta
 import json
 import requests
 import sys
@@ -44,19 +45,38 @@ class caseNumberDetail(TemplateView):
             caseInfo = ''
 
         if (caseInfo == ''):
-            context['message'] = "Data Not Found. Please select another location!"
+            context['message'] = "Data for case number '" + query +  "'  is not found. Please input another valid case number!"
         else:
-            caseInfo = Case.objects.get(caseNumber = query)
-            context['message'] = "Data Not Found. Please select another location!"
-            context['caseNumber'] ="Showing details of case number " + caseInfo.caseNumber
-            context['personName'] ="Name: " + caseInfo.personName
-            context['identityDocumentNumber'] ="ID Number: " + caseInfo.identityDocumentNumber
-            context['birthDate'] ="Birth Date: " + caseInfo.birthDate
-            context['symptomsOnsetDate'] ="Symptoms Onset Date: " + caseInfo.symptomsOnsetDate
-            context['infectionConfirmationDate'] ="Infection Confirmation Date: " + caseInfo.infectionConfirmationDate
+            # caseInfo = Case.objects.get(caseNumber = query)
+            # context['message'] = ""
+            context['caseNumber'] =  str(caseInfo.caseNumber)
+            context['personName'] = caseInfo.personName
+            context['identityDocumentNumber'] = caseInfo.identityDocumentNumber
+            context['birthDate'] = str(caseInfo.birthDate)
+            context['symptomsOnsetDate'] = str(caseInfo.symptomsOnsetDate)
+            context['infectionConfirmationDate'] = str(caseInfo.infectionConfirmationDate)
 
         return context
 
+class CreateAccountForm(forms.ModelForm):
+    class Meta:
+        model = Member
+        fields = '__all__'
+
+class CreateAccount(TemplateView):
+    form_class = CreateAccountForm
+    template_name = "createAccount.html"
+
+    def get(self, request):
+        return render(request, self.template_name, {'form': self.form_class})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("/homePage")
+        else:
+            return render(request, self.template_name, {'form': form})
 
 class LoginForm(forms.ModelForm):
     class Meta:
@@ -80,7 +100,9 @@ class Login(TemplateView):
             if password == member_details.password:
                 return redirect('/homePage')
             else:
-                return render(request,self.template_name,{'form':form})
+                #give message username/password is wrong 
+                msg = "Username or password is not valid. Please input a valid username or password!"
+                return render(request,self.template_name,{'form':form, 'message' : msg})
         else:
             return render(request,self.template_name,{'form':form})
 
@@ -111,15 +133,7 @@ class AddNewCase(TemplateView):
 class AddNewEventForm(forms.ModelForm):
     class Meta:
         model = Event
-        exclude = ['venueAddress', 'venueXCoordinates', 'venueYCoordinates']
-    
-    # def save(self, commit=True, xcoord = '', ycoord = ''):
-    #     obj = super(AddNewEventForm, self).save(commit=False)
-    #     obj.venueXCoordinates = xcoord
-    #     obj.venueYCoordinates = ycoord
-    #     if commit:
-    #         obj.save()
-    #     return obj
+        exclude = ['venueAddress','venueXCoordinates','venueYCoordinates', 'people']
 
     def clean_code(self):
         return self.cleaned_data['venueName'].upper()
@@ -178,27 +192,35 @@ class SearchEvent(TemplateView):
 class EventDetail(TemplateView):
     model = Event
     template_name = 'eventPage.html'
+
+
     def get_context_data(self, **kwargs):
         startdate = self.request.GET.get('startdate')
         enddate = self.request.GET.get('enddate')
+        start = datetime.fromisoformat(startdate).date()
+        end = datetime.fromisoformat(enddate).date()
+        gap = datetime.fromisoformat(enddate) - datetime.fromisoformat(startdate)
+        date_list = []
+        for day in range(0,gap.days):
+            new_date = datetime.fromisoformat(startdate) + timedelta(days=day)
+            date_list.append(new_date)
+        
         context = super().get_context_data(**kwargs)
 
-        try :
-            caseInfo = Case.objects.get(caseNumber = query)
-        except:
-            caseInfo = ''
+        events = {}
+        for day in date_list:
+            date_of_event = day.date()
+            try:
+                events_in_that_day = Event.objects.filter(eventDate = date_of_event)
+                date_string = date_of_event.strftime("%Y-%m-%d")
+                events[date_string] = events_in_that_day
+            except:
+                continue
 
-        if (caseInfo == ''):
-            context['message'] = "Data Not Found. Please select another location!"
-        else:
-            caseInfo = Case.objects.get(caseNumber = query)
-            context['message'] = "Data Not Found. Please select another location!"
-            context['caseNumber'] ="Showing details of case number " + caseInfo.caseNumber
-            context['personName'] ="Name: " + caseInfo.personName
-            context['identityDocumentNumber'] ="ID Number: " + caseInfo.identityDocumentNumber
-            context['birthDate'] ="Birth Date: " + caseInfo.birthDate
-            context['symptomsOnsetDate'] ="Symptoms Onset Date: " + caseInfo.symptomsOnsetDate
-            context['infectionConfirmationDate'] ="Infection Confirmation Date: " + caseInfo.infectionConfirmationDate
+        
+        context['event_list'] = events 
+        context['startdate'] = startdate
+        context['enddate'] = enddate
 
         return context
 
