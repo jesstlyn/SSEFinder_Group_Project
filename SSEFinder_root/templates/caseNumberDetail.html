@@ -3,20 +3,39 @@
 
 </head>
 <body>
-<h1> Case Number Detail</h1>
+
 
 <div>
+    <h1> Case Number Detail</h1>
 </div>
 
-<h2>{{message}}</h2>
-<h3>{{caseNumber}} </h3>
-<h3>{{personName}}</h3>
-<h3>{{identityDocumentNumber}}</h3>
-<h3>{{birthDate}}</h3>
-<h3>{{symptomsOnsetDate}}</h3>
-<h3>{{infectionConfirmationDate}}</h3>
+<div>
+    <h2> {{message}} </h2>
+</div>
+<div>
+    <table> 
+        <tr>
+                <th> Case Number </th>
+                <th> Person Name </th>
+                <th> Identity Document Number </th>
+                <th> Date of Birth</th>
+                <th> Date of Onset</th>
+                <th> Date Case Confirmed </th>
+            </tr>
+            <tr>
+                <td>{{caseNumber}}</td>
+                <td>{{personName}}</td>
+                <td>{{identityDocumentNumber}}</td>
+                <td>{{birthDate}}</td>
+                <td>{{symptomsOnsetDate}}</td>
+                <td>{{infectionConfirmationDate}}</td>
+            </tr>
+    </table>
+
+</div>
+
     <form action="{% url 'searchCaseNumber' %}" class='searchCaseNumber'>
-        <input type='submit' value='Search Case Number'>
+        <input style="float: left" type='submit' value='Search Case Number'>
     </form>
 
     <form action="{% url 'home-page' %}" class='home-page'>

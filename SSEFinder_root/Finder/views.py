@@ -34,19 +34,38 @@ class caseNumberDetail(TemplateView):
             caseInfo = ''
 
         if (caseInfo == ''):
-            context['message'] = "Data Not Found. Please select another location!"
+            context['message'] = "Data for case number '" + query +  "'  is not found. Please input another valid case number!"
         else:
-            caseInfo = Case.objects.get(caseNumber = query)
-            context['message'] = "Data Not Found. Please select another location!"
-            context['caseNumber'] ="Showing details of case number " + caseInfo.caseNumber
-            context['personName'] ="Name: " + caseInfo.personName
-            context['identityDocumentNumber'] ="ID Number: " + caseInfo.identityDocumentNumber
-            context['birthDate'] ="Birth Date: " + caseInfo.birthDate
-            context['symptomsOnsetDate'] ="Symptoms Onset Date: " + caseInfo.symptomsOnsetDate
-            context['infectionConfirmationDate'] ="Infection Confirmation Date: " + caseInfo.infectionConfirmationDate
+            # caseInfo = Case.objects.get(caseNumber = query)
+            # context['message'] = ""
+            context['caseNumber'] =  str(caseInfo.caseNumber)
+            context['personName'] = caseInfo.personName
+            context['identityDocumentNumber'] = caseInfo.identityDocumentNumber
+            context['birthDate'] = str(caseInfo.birthDate)
+            context['symptomsOnsetDate'] = str(caseInfo.symptomsOnsetDate)
+            context['infectionConfirmationDate'] = str(caseInfo.infectionConfirmationDate)
 
         return context
 
+class CreateAccountForm(forms.ModelForm):
+    class Meta:
+        model = Member
+        fields = '__all__'
+
+class CreateAccount(TemplateView):
+    form_class = CreateAccountForm
+    template_name = "createAccount.html"
+
+    def get(self, request):
+        return render(request, self.template_name, {'form': self.form_class})
+
+    def post(self, request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("/homePage")
+        else:
+            return render(request, self.template_name, {'form': form})
 
 class LoginForm(forms.ModelForm):
     class Meta:
@@ -70,7 +89,9 @@ class Login(TemplateView):
             if password == member_details.password:
                 return redirect('/homePage')
             else:
-                return render(request,self.template_name,{'form':form})
+                #give message username/password is wrong 
+                msg = "Username or password is not valid. Please input a valid username or password!"
+                return render(request,self.template_name,{'form':form, 'message' : msg})
         else:
             return render(request,self.template_name,{'form':form})
 
@@ -101,7 +122,7 @@ class AddNewCase(TemplateView):
 class AddNewEventForm(forms.ModelForm):
     class Meta:
         model = Event
-        exclude = ['venueAddress','venueXCoordinates','venueYCoordinates']
+        exclude = ['venueAddress','venueXCoordinates','venueYCoordinates', 'people']
 
     def clean_code(self):
         return self.cleaned_data['venueName'].upper()
@@ -140,7 +161,7 @@ class AddNewEvent(TemplateView):
             #     obj.numberOfPeople = numOfPeople + 1
             #     obj.save()
             form.save()
-            return redirect("/")
+            return redirect("addNewEvent")
         else:
             return render(request, self.template_name, {'form': form})
             
