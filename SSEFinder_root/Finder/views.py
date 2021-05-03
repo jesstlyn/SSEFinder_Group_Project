@@ -4,7 +4,6 @@ from django.shortcuts import render,redirect
 from django.views.generic import TemplateView, View
 from Finder.models import Member, Case, Event
 from django.contrib import messages
-import requests
 import json
 import sys
 
