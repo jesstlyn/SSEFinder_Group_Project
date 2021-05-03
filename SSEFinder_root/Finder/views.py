@@ -4,6 +4,17 @@ from django.shortcuts import render,redirect
 from django.views.generic import TemplateView, View
 from Finder.models import Member, Case, Event
 from django.contrib import messages
+import requests
+import json
+import sys
+
+
+#get data from API
+def get_data(venueName):
+    url = "https://geodata.gov.hk/gs/api/v1.0.0/locationSearch"
+    response = requests.get(url=url,params={"q": venueName})
+    response_json = response.json()
+    print(response_json)
 
 class homePage(TemplateView):
     template_name = 'homePage.html'
@@ -58,7 +69,7 @@ class Login(TemplateView):
             password = request.POST['password']
             member_details = Member.objects.get(username=username)
             if password == member_details.password:
-                return redirect('homepage')
+                return redirect('/homePage')
             else:
                 return render(request,self.template_name,{'form':form})
         else:
@@ -83,12 +94,12 @@ class AddNewCase(TemplateView):
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
-            new_case = form.save()
-            return redirect("addNewEvent")
+            form.save()
+            return redirect("/addNewEvent")
         else:
             return render(request, self.template_name, {'form': form})
  
- class AddNewEventForm(forms.ModelForm):
+class AddNewEventForm(forms.ModelForm):
     class Meta:
         model = Event
         exclude = ['venueAddress','venueXCoordinates','venueYCoordinates']
@@ -106,25 +117,36 @@ class AddNewEvent(TemplateView):
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
+            inputVenueName = request.POST['venueName']
+            print(inputVenueName)
+
             #check if the event has already exists or not
+            # try : 
+            #     obj = Event.objects.get(venueName = inputVenueName)
+            #     print(obj)
+            # except : 
+            #     obj = None
 
-            try : 
-                obj = Event.objects.get(venueName = )
-            except : 
-                obj = None
-            
-            if (obj == None) :
-                 
-
-
-
-            new_event = form.save()
+            # if (obj == None) :#not exist
+            #     newEvent = form.save(commit=False)
+            #     eventData = get_data(inputVenueName)
+            #     newEvent.venueAddress = eventData['addressEN']
+            #     newEvent.venueXCoordinates = eventData['x']
+            #     newEvent.venueYCoordinates = eventData['y']
+            #     newEvent.numberOfPeople = 1
+            #     newEvent.save()
+            # else:
+            #     numOfPeople = obj.numberOfPeople
+            #     print("num of ppl in db : ", numOfPeople)
+            #     obj.numberOfPeople = numOfPeople + 1
+            #     obj.save()
+            form.save()
             return redirect("/")
         else:
-<<<<<<< HEAD
             return render(request, self.template_name, {'form': form})
             
     
-=======
-            return render(request, self.template_name, {'form': form})
->>>>>>> f00f77ef6331b38331ffe225a2329f3bb51e3302
+
+
+
+

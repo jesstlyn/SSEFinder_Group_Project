@@ -1,7 +1,7 @@
 
 <h1><u> Adding New Case... </u></h1>
 <div>
-    <form action="{% url 'addNewEvent' %}" method="POST">
+    <form action="{% url 'addNewEvent-page' %}" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <button style="float: left" type="submit"> Add New Case </button>

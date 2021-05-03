@@ -3,7 +3,7 @@
 
 </head>
 <body>
-    <form action="" class='addNewCase'>
+    <form action="{% url 'addNewCase-page' %}" class='addNewCase' method="GET">
         <input type='submit' value='Add New Case'>
     </form>
     <form action="{% url 'searchCaseNumber' %}" class='searchCaseNumber'>

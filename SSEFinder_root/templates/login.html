@@ -1,6 +1,6 @@
 <h1>Login</h1>
 
-<form action="{% url 'homepage' %" method="POST">
+<form action="home-page" method="POST">
     {% csrf_token %}
     {{form.as_p}}
     <button type="submit">Login</button>
