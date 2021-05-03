@@ -1,0 +1,20 @@
+<h1>Showing all event from {{startdate}} to {{enddate}}</h1>
+    <ul>
+    {% for day,events in event_list.items %}
+    <li>{{day}} 
+    <ul>
+        {% for event in events %}
+        <li>Venue Name: {{ event.venueName}}</li>
+        <li>Venue Location: {{ event.venueLocation}}</li>
+        <li>Venue Address: {{ event.venueAddress}}</li>
+        <li>X : {{ event.venueXCoordinates}}</li>
+        <li>Y : {{ event.venueYCoordinates}}</li>
+        <li>Description : {{ event.eventDescriptipn}}</li>
+        {% endfor %}
+    </ul>
+    </li>
+    {% empty %}
+    <li>No order yet.</li>
+    {% endfor %}
+</ul>
+

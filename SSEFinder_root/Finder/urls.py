@@ -9,4 +9,6 @@ urlpatterns = [
     path('searchCaseNumber/', views.searchCaseNumber.as_view(), name='searchCaseNumber'),
     path('caseNumberDetail/', views.caseNumberDetail.as_view(), name='caseNumberDetail'),
     path('createAccount/', views.CreateAccount.as_view(), name='createAccount-page'),
+    path('searchEvent/', views.SearchEvent.as_view(),name='searchEvent'),
+    path('eventDetail/', views.EventDetail.as_view(), name='eventDetail'),
     ]

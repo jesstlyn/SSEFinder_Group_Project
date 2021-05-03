@@ -4,6 +4,7 @@ from django.shortcuts import render,redirect
 from django.views.generic import TemplateView, View
 from Finder.models import Member, Case, Event
 from django.contrib import messages
+from datetime import datetime,timedelta
 import json
 import sys
 
@@ -172,27 +173,35 @@ class SearchEvent(TemplateView):
 class EventDetail(TemplateView):
     model = Event
     template_name = 'eventPage.html'
+
+
     def get_context_data(self, **kwargs):
         startdate = self.request.GET.get('startdate')
         enddate = self.request.GET.get('enddate')
+        start = datetime.fromisoformat(startdate).date()
+        end = datetime.fromisoformat(enddate).date()
+        gap = datetime.fromisoformat(enddate) - datetime.fromisoformat(startdate)
+        date_list = []
+        for day in range(0,gap.days):
+            new_date = datetime.fromisoformat(startdate) + timedelta(days=day)
+            date_list.append(new_date)
+        
         context = super().get_context_data(**kwargs)
 
-        try :
-            caseInfo = Case.objects.get(caseNumber = query)
-        except:
-            caseInfo = ''
+        events = {}
+        for day in date_list:
+            date_of_event = day.date()
+            try:
+                events_in_that_day = Event.objects.filter(eventDate = date_of_event)
+                date_string = date_of_event.strftime("%Y-%m-%d")
+                events[date_string] = events_in_that_day
+            except:
+                continue
 
-        if (caseInfo == ''):
-            context['message'] = "Data Not Found. Please select another location!"
-        else:
-            caseInfo = Case.objects.get(caseNumber = query)
-            context['message'] = "Data Not Found. Please select another location!"
-            context['caseNumber'] ="Showing details of case number " + caseInfo.caseNumber
-            context['personName'] ="Name: " + caseInfo.personName
-            context['identityDocumentNumber'] ="ID Number: " + caseInfo.identityDocumentNumber
-            context['birthDate'] ="Birth Date: " + caseInfo.birthDate
-            context['symptomsOnsetDate'] ="Symptoms Onset Date: " + caseInfo.symptomsOnsetDate
-            context['infectionConfirmationDate'] ="Infection Confirmation Date: " + caseInfo.infectionConfirmationDate
+        
+        context['event_list'] = events 
+        context['startdate'] = startdate
+        context['enddate'] = enddate
 
         return context
 
