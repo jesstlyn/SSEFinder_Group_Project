@@ -146,7 +146,35 @@ class AddNewEvent(TemplateView):
             return render(request, self.template_name, {'form': form})
             
     
+class SearchEvent(TemplateView):
+    template_name = "searchEvent.html"
+    
+class EventDetail(TemplateView):
+    model = Event
+    template_name = 'eventPage.html'
+    def get_context_data(self, **kwargs):
+        startdate = self.request.GET.get('startdate')
+        enddate = self.request.GET.get('enddate')
+        context = super().get_context_data(**kwargs)
 
+        try :
+            caseInfo = Case.objects.get(caseNumber = query)
+        except:
+            caseInfo = ''
+
+        if (caseInfo == ''):
+            context['message'] = "Data Not Found. Please select another location!"
+        else:
+            caseInfo = Case.objects.get(caseNumber = query)
+            context['message'] = "Data Not Found. Please select another location!"
+            context['caseNumber'] ="Showing details of case number " + caseInfo.caseNumber
+            context['personName'] ="Name: " + caseInfo.personName
+            context['identityDocumentNumber'] ="ID Number: " + caseInfo.identityDocumentNumber
+            context['birthDate'] ="Birth Date: " + caseInfo.birthDate
+            context['symptomsOnsetDate'] ="Symptoms Onset Date: " + caseInfo.symptomsOnsetDate
+            context['infectionConfirmationDate'] ="Infection Confirmation Date: " + caseInfo.infectionConfirmationDate
+
+        return context
 
 
 
