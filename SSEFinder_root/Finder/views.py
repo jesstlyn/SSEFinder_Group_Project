@@ -31,21 +31,29 @@ class homePage(TemplateView):
 
 class searchCaseNumber(TemplateView):
     template_name = 'searchCaseNumber.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['allInfo'] = Case.objects.filter()
+        context['aaaa'] = 'ssss'
+        return context
 
     def get(self, request):
-        return render(request, self.template_name)
+        allInfo = Case.objects.filter()
+        return render(request, self.template_name, {'allInfo':allInfo})
 
     def post(self, request):
         if 'AddEvent' in request.POST:
-            return redirect("/homePage")
+            request.session['case_number'] = self.request.POST.get('case_number')
+            return redirect("/addNewEvent")
         if 'ViewDetails' in request.POST:
-            return redirect("/homePage")
+            request.session['case_number'] = self.request.POST.get('case_number')
+            return redirect("/caseNumberDetail")
 
 class caseNumberDetail(TemplateView):
     model = Case
     template_name = 'caseNumberDetail.html'
     def get_context_data(self, **kwargs):
-        query = self.request.GET.get('case_number')
+        query = self.request.session.get('case_number')
         context = super().get_context_data(**kwargs)
 
         try :
@@ -106,13 +114,22 @@ class Login(TemplateView):
         if form.is_valid():
             username = request.POST['username']
             password = request.POST['password']
-            member_details = Member.objects.get(username=username)
-            if password == member_details.password:
-                return redirect('/homePage')
-            else:
-                #give message username/password is wrong 
-                msg = "Username or password is not valid. Please input a valid username or password!"
+            try : 
+                member_details = Member.objects.get(username=username)
+            except:
+                member_details = None
+
+            if (member_details == None):
+                #if no username match in database
+                msg = "No username '" + username + "' yet. Try create an account or enter the right username and password!"
                 return render(request,self.template_name,{'form':form, 'message' : msg})
+            else:
+                if (password == member_details.password):
+                    return redirect('/homePage')
+                else:
+                    #give message if password is wrong 
+                    msg = "Password is not valid. Please input the right password!"
+                    return render(request,self.template_name,{'form':form, 'message' : msg})
         else:
             return render(request,self.template_name,{'form':form})
 
@@ -135,7 +152,6 @@ class AddNewCase(TemplateView):
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
-            request.session['caseNumber'] = request.POST['caseNumber']
             form.save()
             return redirect("/addNewEvent")
         else:
@@ -154,13 +170,14 @@ class AddNewEvent(TemplateView):
     template_name = "addNewEvent.html"
 
     def get(self, request):
-        return render(request, self.template_name, {'form': self.form_class})
+        caseNumber = request.session.get('case_number')
+        return render(request, self.template_name, {'form': self.form_class, 'caseNumber':caseNumber})
 
     def post(self, request):
         form = self.form_class(request.POST)
         #self.fields['venueXCoordinates'].widget.attrs['readonly'] = True
         #self.fields['venueYCoordinates'].widget.attrs['readonly'] = True
-        caseNumber = request.session.get('caseNumber')
+        caseNumber = request.session.get('case_number')
         if form.is_valid():
             inputVenueName = request.POST['venueName']
             print(inputVenueName)
