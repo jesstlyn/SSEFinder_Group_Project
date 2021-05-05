@@ -40,7 +40,7 @@ class searchCaseNumber(TemplateView):
             return redirect("/homePage")
         if 'ViewDetails' in request.POST:
             return redirect("/homePage")
-            
+
 class caseNumberDetail(TemplateView):
     model = Case
     template_name = 'caseNumberDetail.html'
