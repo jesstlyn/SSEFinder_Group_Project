@@ -10,6 +10,14 @@
         <li>X : {{ event.venueXCoordinates}}</li>
         <li>Y : {{ event.venueYCoordinates}}</li>
         <li>Description : {{ event.eventDescriptipn}}</li>
+        {%for people in event.people.all%}
+            <li>Case Number: {{people.caseNumber}}</li>
+            <li>Name: {{people.personName}}</li>
+            <li>Identity Document Number: {{people.identityDocumentNumber}}</li>
+            <li>Date of Birth: {{people.birthDate}}</li>
+            <li>Date of Onset: {{people.symptomsOnsetDate}}</li>
+            <li>Date Case Confirmed: {{people.infectionConfirmationDate}}</li>
+        {% endfor %}
         {% endfor %}
     </ul>
     </li>
