@@ -1,3 +1,4 @@
+{% load possible %}
 <h1>Showing all event from {{startdate}} to {{enddate}}</h1>
     <ul>
     {% for day,events in event_list.items %}
@@ -19,7 +20,18 @@
             <li>Date of Birth: {{people.birthDate}}</li>
             <li>Date of Onset: {{people.symptomsOnsetDate}}</li>
             <li>Date Case Confirmed: {{people.infectionConfirmationDate}}</li>
+            {%infector event.eventDate people.symptomsOnsetDate as inf%}
+            {%infected event.eventDate people.symptomsOnsetDate as inf2%}
+            {% if inf%}
+            <p>Possible Infector</p>
+            {% endif %}
+            {%if inf2%}
+            <p>Possible Infected</p>
+            {% endif %}
         {% endfor %}
+        {%if event.people.all.count > 6%}
+        <h1>SSE Event</h1>
+        {% endif %}
         {% endfor %}
     </ul>
     </li>
