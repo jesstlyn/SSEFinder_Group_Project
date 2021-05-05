@@ -12,35 +12,38 @@
 <div>
     <h2> {{message}} </h2>
 </div>
-<div>
-    <table> 
-        <tr>
-                <th> Case Number </th>
-                <th> Person Name </th>
-                <th> Identity Document Number </th>
-                <th> Date of Birth</th>
-                <th> Date of Onset</th>
-                <th> Date Case Confirmed </th>
-            </tr>
-            <tr>
-                <td>{{caseNumber}}</td>
-                <td>{{personName}}</td>
-                <td>{{identityDocumentNumber}}</td>
-                <td>{{birthDate}}</td>
-                <td>{{symptomsOnsetDate}}</td>
-                <td>{{infectionConfirmationDate}}</td>
-            </tr>
-    </table>
 
+<h3 class='showInfo'>Showing details of CaseNumber {{caseNumber}} </h3>
+<ul>
+    <li>Name: {{personName}}</li>
+    <li>Identity Document Number: {{identityDocumentNumber}}</li> 
+    <li>Birth Date: {{birthDate}}</li>
+    <li>Symptoms Onset Date: {{symptomsOnsetDate}}</li>
+    <li>Infection Confirmation Date: {{infectionConfirmationDate}}</li>
+</ul>
+<div>
+    {% for event in events %}
+    <li><div>Event Name: {{ event.caseEventVenueId.venueName}}</div>
+    <div>Event Venue: {{ event.caseEventVenueId.venueLocation}}</div>
+    <div>Event Address: {{ event.caseEventVenueId.venueAddress}}</div>
+    <div>X Coordinate: {{ event.caseEventVenueId.venueXCoordinates}}</div>
+    <div>Y Coordinate: {{ event.caseEventVenueId.venueYCoordinates}}</div>
+    <div>Event Date: {{ event.caseEventVenueId.eventDate}}</div>
+    <div>Event Description: {{ event.caseEventVenueId.eventDescriptipn}}</div>
+    <br>
+    </li>
+    <div></div>
+    {% endfor %}
+<div>{{message2}}</div>
 </div>
 
-    <form action="{% url 'searchCaseNumber' %}" class='searchCaseNumber'>
-        <input style="float: left" type='submit' value='Search Case Number'>
-    </form>
+<form action="{% url 'searchCaseNumber' %}" class='searchCaseNumber'>
+    <input style="float: left" type='submit' value='Search Case Number'>
+</form>
 
-    <form action="{% url 'home-page' %}" class='home-page'>
-        <input type='submit' value='Home'>
-    </form>
+<form action="{% url 'home-page' %}" class='home-page'>
+    <input type='submit' value='Home'>
+</form>
 
 </body>
 </html>
