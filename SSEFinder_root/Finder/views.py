@@ -185,12 +185,10 @@ class AddNewEvent(TemplateView):
                 case_object = Case.objects.get(caseNumber= caseNumber)
                 event = Event.objects.get(venueName=inputVenueName) #first get the object
                 event.people.add(case_object)
-            #form(venueXCoordinates='xcoord', venueYCoordinates='ycoord')
-            # newEvent = form.save(commit=False)
-            # newEvent.venueXCoordinates = xcoord
-            # newEvent.venueYCoordinates = ycoord
-            # newEvent.save()
-            return redirect("/addNewEvent")
+            if 'Finish' in request.POST:
+                return redirect('/homePage')
+            else:
+                return redirect('/addNewEvent')
         else:
             return render(request, self.template_name, {'form': form})
             
