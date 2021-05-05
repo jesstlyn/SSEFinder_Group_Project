@@ -1,31 +1,37 @@
-<h1>Showing all events from {{startdate}} to {{enddate}}</h1>
-<div>
+{% load possible %}
+<h1>Showing all event from {{startdate}} to {{enddate}}</h1>
     <ul>
-        {% for day,events in event_list.items %}
-        <li> {{day}} 
-            <ul>
-                {% for event in events %}
-                <h1>Event Details</h1>
-                <li>Venue Name: {{ event.venueName}}</li>
-                <li>Venue Location: {{ event.venueLocation}}</li>
-                <li>Venue Address: {{ event.venueAddress}}</li>
-                <li>X : {{ event.venueXCoordinates}}</li>
-                <li>Y : {{ event.venueYCoordinates}}</li>
-                <li>Description : {{ event.eventDescriptipn}}</li>
-                <h1>Cases Associated</h1>
-                {%for people in event.people.all%}
-                    <li>Case Number: {{people.caseNumber}}</li>
-                    <li>Name: {{people.personName}}</li>
-                    <li>Identity Document Number: {{people.identityDocumentNumber}}</li>
-                    <li>Date of Birth: {{people.birthDate}}</li>
-                    <li>Date of Onset: {{people.symptomsOnsetDate}}</li>
-                    <li>Date Case Confirmed: {{people.infectionConfirmationDate}}</li>
-                {% endfor %}
-                {% endfor %}
-            </ul>
-        </li>
-        {% empty %}
-        <li>No order yet.</li>
+    {% for day,events in event_list.items %}
+    <li>{{day}} 
+    <ul>
+        {% for event in events %}
+        <h1>Event Details</h1>
+        <li>Venue Name: {{ event.venueName}}</li>
+        <li>Venue Location: {{ event.venueLocation}}</li>
+        <li>Venue Address: {{ event.venueAddress}}</li>
+        <li>X : {{ event.venueXCoordinates}}</li>
+        <li>Y : {{ event.venueYCoordinates}}</li>
+        <li>Description : {{ event.eventDescriptipn}}</li>
+        <h1>Cases Associated</h1>
+        {%for people in event.people.all%}
+            <li>Case Number: {{people.caseNumber}}</li>
+            <li>Name: {{people.personName}}</li>
+            <li>Identity Document Number: {{people.identityDocumentNumber}}</li>
+            <li>Date of Birth: {{people.birthDate}}</li>
+            <li>Date of Onset: {{people.symptomsOnsetDate}}</li>
+            <li>Date Case Confirmed: {{people.infectionConfirmationDate}}</li>
+            {%infector event.eventDate people.symptomsOnsetDate as inf%}
+            {%infected event.eventDate people.symptomsOnsetDate as inf2%}
+            {% if inf%}
+            <p>Possible Infector</p>
+            {% endif %}
+            {%if inf2%}
+            <p>Possible Infected</p>
+            {% endif %}
+        {% endfor %}
+        {%if event.people.all.count > 6%}
+        <h1>SSE Event</h1>
+        {% endif %}
         {% endfor %}
     </ul>
 </div>
