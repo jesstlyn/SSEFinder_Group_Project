@@ -32,6 +32,15 @@ class homePage(TemplateView):
 class searchCaseNumber(TemplateView):
     template_name = 'searchCaseNumber.html'
 
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        if 'AddEvent' in request.POST:
+            return redirect("/homePage")
+        if 'ViewDetails' in request.POST:
+            return redirect("/homePage")
+            
 class caseNumberDetail(TemplateView):
     model = Case
     template_name = 'caseNumberDetail.html'
@@ -49,6 +58,7 @@ class caseNumberDetail(TemplateView):
         else:
             # caseInfo = Case.objects.get(caseNumber = query)
             # context['message'] = ""
+
             context['caseNumber'] =  str(caseInfo.caseNumber)
             context['personName'] = caseInfo.personName
             context['identityDocumentNumber'] = caseInfo.identityDocumentNumber
@@ -173,10 +183,11 @@ class AddNewEvent(TemplateView):
                 newEvent.numberOfPeople = 1
                 caseNum = request.session.get('caseNumber')
                 caseObj = Case.objects.get(caseNumber = caseNum)
-                newEvent.people.set(caseObj)
+                #newEvent.people.set(caseObj)
                 newEvent.save()
                 case_object = Case.objects.get(caseNumber= caseNumber)
                 event = Event.objects.get(venueName=inputVenueName) #first get the object
+                    
                 event.people.add(case_object)
             else:
                 numOfPeople = obj.numberOfPeople
