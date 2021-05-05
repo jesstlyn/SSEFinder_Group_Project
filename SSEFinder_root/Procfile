@@ -1,1 +1,1 @@
-web: gunicorn SSEFinder_config.wsgi --log-file
+web: gunicorn SSEFinder_config.wsgi --log-file -
