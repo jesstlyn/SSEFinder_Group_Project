@@ -31,12 +31,29 @@ class homePage(TemplateView):
 
 class searchCaseNumber(TemplateView):
     template_name = 'searchCaseNumber.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['allInfo'] = Case.objects.filter()
+        context['aaaa'] = 'ssss'
+        return context
+
+    def get(self, request):
+        allInfo = Case.objects.filter()
+        return render(request, self.template_name, {'allInfo':allInfo})
+
+    def post(self, request):
+        if 'AddEvent' in request.POST:
+            request.session['case_number'] = self.request.POST.get('case_number')
+            return redirect("/addNewEvent")
+        if 'ViewDetails' in request.POST:
+            request.session['case_number'] = self.request.POST.get('case_number')
+            return redirect("/caseNumberDetail")
 
 class caseNumberDetail(TemplateView):
     model = Case
     template_name = 'caseNumberDetail.html'
     def get_context_data(self, **kwargs):
-        query = self.request.GET.get('case_number')
+        query = self.request.session.get('case_number')
         context = super().get_context_data(**kwargs)
 
         try :
@@ -49,6 +66,7 @@ class caseNumberDetail(TemplateView):
         else:
             # caseInfo = Case.objects.get(caseNumber = query)
             # context['message'] = ""
+
             context['caseNumber'] =  str(caseInfo.caseNumber)
             context['personName'] = caseInfo.personName
             context['identityDocumentNumber'] = caseInfo.identityDocumentNumber
@@ -134,8 +152,6 @@ class AddNewCase(TemplateView):
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
-            #request.session['web_input'] = request.POST['web_input']
-            request.session['caseNumber'] = request.POST['caseNumber']
             form.save()
             return redirect("/addNewEvent")
         else:
@@ -154,13 +170,12 @@ class AddNewEvent(TemplateView):
     template_name = "addNewEvent.html"
 
     def get(self, request):
-        return render(request, self.template_name, {'form': self.form_class})
+        caseNumber = request.session.get('case_number')
+        return render(request, self.template_name, {'form': self.form_class, 'caseNumber':caseNumber})
 
     def post(self, request):
         form = self.form_class(request.POST)
-        #self.fields['venueXCoordinates'].widget.attrs['readonly'] = True
-        #self.fields['venueYCoordinates'].widget.attrs['readonly'] = True
-        caseNumber = request.session.get('caseNumber')
+        caseNumber = request.session.get('case_number')
         if form.is_valid():
             inputVenueName = request.POST['venueName']
             print(inputVenueName)
@@ -181,9 +196,13 @@ class AddNewEvent(TemplateView):
                 newEvent.venueXCoordinates = venueDetails[0]
                 newEvent.venueYCoordinates = venueDetails[1]
                 newEvent.numberOfPeople = 1
+                caseNum = request.session.get('caseNumber')
+                caseObj = Case.objects.get(caseNumber = caseNum)
+                #newEvent.people.set(caseObj)
                 newEvent.save()
                 case_object = Case.objects.get(caseNumber= caseNumber)
                 event = Event.objects.get(venueName=inputVenueName) #first get the object
+                    
                 event.people.add(case_object)
             else:
                 numOfPeople = obj.numberOfPeople
