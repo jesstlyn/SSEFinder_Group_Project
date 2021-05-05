@@ -21,7 +21,7 @@ def get_data(venueName):
         if i['nameEN'] == venueName:
             xcoord = i['x']
             ycoord = i['y']
-            address = i['nameEN']
+            address = i['addressEN']
     print(response_json)
     mylist = [xcoord, ycoord, address]
     return mylist
@@ -34,7 +34,6 @@ class searchCaseNumber(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['allInfo'] = Case.objects.filter()
-        context['aaaa'] = 'ssss'
         return context
 
     def get(self, request):
@@ -58,6 +57,7 @@ class caseNumberDetail(TemplateView):
 
         try :
             caseInfo = Case.objects.get(caseNumber = query)
+            print(caseInfo)
         except:
             caseInfo = ''
 
@@ -74,6 +74,16 @@ class caseNumberDetail(TemplateView):
             context['symptomsOnsetDate'] = str(caseInfo.symptomsOnsetDate)
             context['infectionConfirmationDate'] = str(caseInfo.infectionConfirmationDate)
 
+            try:
+                eventsAttended = CaseEvent.objects.filter(caseEventNumber = caseInfo)
+            except:
+                eventsAttended = ''
+            
+            if(eventsAttended == ''):
+                context['message2'] = "No events found. Please add an Event for this case"
+            else:
+                event = eventsAttended
+                context['events'] = event
         return context
 
 class CreateAccountForm(forms.ModelForm):
@@ -153,7 +163,7 @@ class AddNewCase(TemplateView):
         form = self.form_class(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("/addNewEvent")
+            return redirect("/homePage")
         else:
             return render(request, self.template_name, {'form': form})
  
