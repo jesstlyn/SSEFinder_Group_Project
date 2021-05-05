@@ -2,7 +2,7 @@ from django import forms
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render,redirect
 from django.views.generic import TemplateView, View
-from Finder.models import Member, Case, Event
+from Finder.models import Member, Case, Event, CaseEvent
 from django.contrib import messages
 from datetime import datetime,timedelta
 import json
@@ -125,6 +125,8 @@ class AddNewCase(TemplateView):
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
+            #request.session['web_input'] = request.POST['web_input']
+            request.session['caseNumber'] = request.POST['caseNumber']
             form.save()
             return redirect("/addNewEvent")
         else:
@@ -149,7 +151,7 @@ class AddNewEvent(TemplateView):
         form = self.form_class(request.POST)
         #self.fields['venueXCoordinates'].widget.attrs['readonly'] = True
         #self.fields['venueYCoordinates'].widget.attrs['readonly'] = True
-
+        caseNumber = request.session.get('caseNumber')
         if form.is_valid():
             inputVenueName = request.POST['venueName']
             print(inputVenueName)
@@ -171,17 +173,24 @@ class AddNewEvent(TemplateView):
                 newEvent.venueYCoordinates = venueDetails[1]
                 newEvent.numberOfPeople = 1
                 newEvent.save()
+                case_object = Case.objects.get(caseNumber= caseNumber)
+                event = Event.objects.get(venueName=inputVenueName) #first get the object
+                event.people.add(case_object)
             else:
                 numOfPeople = obj.numberOfPeople
                 print("num of ppl in db : ", numOfPeople)
                 obj.numberOfPeople = numOfPeople + 1
+                #save another persons pkey and event in the middle table here
                 obj.save()
+                case_object = Case.objects.get(caseNumber= caseNumber)
+                event = Event.objects.get(venueName=inputVenueName) #first get the object
+                event.people.add(case_object)
             #form(venueXCoordinates='xcoord', venueYCoordinates='ycoord')
             # newEvent = form.save(commit=False)
             # newEvent.venueXCoordinates = xcoord
             # newEvent.venueYCoordinates = ycoord
             # newEvent.save()
-            return redirect("/homePage")
+            return redirect("/addNewEvent")
         else:
             return render(request, self.template_name, {'form': form})
             
