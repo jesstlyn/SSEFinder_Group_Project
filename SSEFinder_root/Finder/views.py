@@ -96,13 +96,22 @@ class Login(TemplateView):
         if form.is_valid():
             username = request.POST['username']
             password = request.POST['password']
-            member_details = Member.objects.get(username=username)
-            if password == member_details.password:
-                return redirect('/homePage')
-            else:
-                #give message username/password is wrong 
-                msg = "Username or password is not valid. Please input a valid username or password!"
+            try : 
+                member_details = Member.objects.get(username=username)
+            except:
+                member_details = None
+
+            if (member_details == None):
+                #if no username match in database
+                msg = "No username '" + username + "' yet. Try create an account or enter the right username and password!"
                 return render(request,self.template_name,{'form':form, 'message' : msg})
+            else:
+                if (password == member_details.password):
+                    return redirect('/homePage')
+                else:
+                    #give message if password is wrong 
+                    msg = "Password is not valid. Please input the right password!"
+                    return render(request,self.template_name,{'form':form, 'message' : msg})
         else:
             return render(request,self.template_name,{'form':form})
 

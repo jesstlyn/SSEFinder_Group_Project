@@ -1,16 +1,23 @@
 
-<h1><u> Adding New Event... </u></h1>
 <div>
-    <form action="" method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button style="float: left" type="submit"> Save and Add More </button>
-    </form>    
-    <form action="{% url 'home-page' %}" method="POST">
-        {% csrf_token %}    
-        <button type="submit"> FINISH </button>
-    </form>
-    <form action="{% url 'home-page' %}">
-        <button type="submit"> Cancel </button>
-    </form>
+    <img  src="https://drive.google.com/uc?export=view&id=1FrIT_PAYstpBZ_XyupytyYuU2IV7UKiY" alt="SSEFinder logo" width="100%" height="150">
 </div>
+
+<div style="text-align:left; margin-left:35%">
+    <h1><u> Adding New Event... </u></h1>
+    <div>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button font-size=30px onMouseOver="this.style.background='#E8E4E5'" onMouseOut="this.style.background='transparent'" style="float:left; border-radius:15px; background: transparent" type="submit"> Save and Add More </button>
+        </form>    
+        <form action="{% url 'home-page' %}" method="POST">
+            {% csrf_token %}    
+            <button font-size=30px onMouseOver="this.style.background='#E8E4E5'" onMouseOut="this.style.background='transparent'" style="float:left; border-radius:15px; background: transparent" type="submit"> Finish </button>
+        </form>
+        <form action="{% url 'home-page' %}">
+            <button font-size=30px onMouseOver="this.style.background='#E8E4E5'" onMouseOut="this.style.background='transparent'" style="float:left; border-radius:15px; background: transparent" type="submit"> Cancel </button>
+        </form>
+    </div>
+</div>
+

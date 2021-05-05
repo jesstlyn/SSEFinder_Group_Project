@@ -3,14 +3,19 @@
 
 </head>
 <body>
-    <form action="{% url 'addNewCase-page' %}" class='addNewCase' method="GET">
-        <input type='submit' value='Add New Case'>
-    </form>
-    <form action="{% url 'searchCaseNumber' %}" class='searchCaseNumber'>
-        <input type='submit' value='Search Case Number'>
-    </form>
-    <form action="{% url 'searchEvent' %}" class='searchEvent'>
-        <input type='submit' value='Search Event'>
-    </form>
+    <img src="https://drive.google.com/uc?export=view&id=1FrIT_PAYstpBZ_XyupytyYuU2IV7UKiY" alt="SSEFinder logo" width="100%" height="250">
+    <div style="text-align: center">
+        <div style="margin-top: 50px">  
+            <form action="{% url 'addNewCase-page' %}" class='addNewCase' method="GET">
+                <input onMouseOver="this.style.color='grey'" onMouseOut="this.style.color='black'" style="font-size: 30px; margin-bottom: 50px; border-radius:25px; background-color: rgb(231, 231, 231); border-color: rgb(55, 55, 61)" type='submit' value='Add New Case'>
+            </form>
+            <form action="{% url 'searchCaseNumber' %}" class='searchCaseNumber'>
+                <input onMouseOver="this.style.color='grey'" onMouseOut="this.style.color='black'" style="font-size: 30px; margin-bottom: 50px; border-radius:25px; background-color: rgb(231, 231, 231); border-color: rgb(55, 55, 61)" type='submit' value='Search Case Number'>
+            </form>
+            <form action="{% url 'searchEvent' %}" class='searchEvent'>
+                <input onMouseOver="this.style.color='grey'" onMouseOut="this.style.color='black'" style="font-size: 30px; margin-bottom: 50px; border-radius:25px; background-color: rgb(231, 231, 231); border-color: rgb(55, 55, 61)" type='submit' value='Search Event'>
+            </form>
+        </div>
+    </div>
 </body>
 </html>
