@@ -1,30 +1,32 @@
-<h1>Showing all event from {{startdate}} to {{enddate}}</h1>
+<h1>Showing all events from {{startdate}} to {{enddate}}</h1>
+<div>
     <ul>
-    {% for day,events in event_list.items %}
-    <li>{{day}} 
-    <ul>
-        {% for event in events %}
-        <h1>Event Details</h1>
-        <li>Venue Name: {{ event.venueName}}</li>
-        <li>Venue Location: {{ event.venueLocation}}</li>
-        <li>Venue Address: {{ event.venueAddress}}</li>
-        <li>X : {{ event.venueXCoordinates}}</li>
-        <li>Y : {{ event.venueYCoordinates}}</li>
-        <li>Description : {{ event.eventDescriptipn}}</li>
-        <h1>Cases Associated</h1>
-        {%for people in event.people.all%}
-            <li>Case Number: {{people.caseNumber}}</li>
-            <li>Name: {{people.personName}}</li>
-            <li>Identity Document Number: {{people.identityDocumentNumber}}</li>
-            <li>Date of Birth: {{people.birthDate}}</li>
-            <li>Date of Onset: {{people.symptomsOnsetDate}}</li>
-            <li>Date Case Confirmed: {{people.infectionConfirmationDate}}</li>
-        {% endfor %}
+        {% for day,events in event_list.items %}
+        <li> {{day}} 
+            <ul>
+                {% for event in events %}
+                <h1>Event Details</h1>
+                <li>Venue Name: {{ event.venueName}}</li>
+                <li>Venue Location: {{ event.venueLocation}}</li>
+                <li>Venue Address: {{ event.venueAddress}}</li>
+                <li>X : {{ event.venueXCoordinates}}</li>
+                <li>Y : {{ event.venueYCoordinates}}</li>
+                <li>Description : {{ event.eventDescriptipn}}</li>
+                <h1>Cases Associated</h1>
+                {%for people in event.people.all%}
+                    <li>Case Number: {{people.caseNumber}}</li>
+                    <li>Name: {{people.personName}}</li>
+                    <li>Identity Document Number: {{people.identityDocumentNumber}}</li>
+                    <li>Date of Birth: {{people.birthDate}}</li>
+                    <li>Date of Onset: {{people.symptomsOnsetDate}}</li>
+                    <li>Date Case Confirmed: {{people.infectionConfirmationDate}}</li>
+                {% endfor %}
+                {% endfor %}
+            </ul>
+        </li>
+        {% empty %}
+        <li>No order yet.</li>
         {% endfor %}
     </ul>
-    </li>
-    {% empty %}
-    <li>No order yet.</li>
-    {% endfor %}
-</ul>
+</div>
 
