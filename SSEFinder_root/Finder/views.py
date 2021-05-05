@@ -175,8 +175,6 @@ class AddNewEvent(TemplateView):
 
     def post(self, request):
         form = self.form_class(request.POST)
-        #self.fields['venueXCoordinates'].widget.attrs['readonly'] = True
-        #self.fields['venueYCoordinates'].widget.attrs['readonly'] = True
         caseNumber = request.session.get('case_number')
         if form.is_valid():
             inputVenueName = request.POST['venueName']
