@@ -125,6 +125,7 @@ class AddNewCase(TemplateView):
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
+            request.session['caseNumber'] = request.POST['caseNumber']
             form.save()
             return redirect("/addNewEvent")
         else:
@@ -170,6 +171,9 @@ class AddNewEvent(TemplateView):
                 newEvent.venueXCoordinates = venueDetails[0]
                 newEvent.venueYCoordinates = venueDetails[1]
                 newEvent.numberOfPeople = 1
+                caseNum = request.session.get('caseNumber')
+                caseObj = Case.objects.get(caseNumber = caseNum)
+                newEvent.people.set(caseObj)
                 newEvent.save()
             else:
                 numOfPeople = obj.numberOfPeople
