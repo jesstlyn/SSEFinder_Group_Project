@@ -4,12 +4,9 @@
     <form action="" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
-        <button style="float: left" type="submit"> Save and Add More </button>
+        <input type="submit" name="more" value="Save and Add More">
+        <input type="submit" name="Finish" value="Finish">
     </form>    
-    <form action="{% url 'home-page' %}" method="POST">
-        {% csrf_token %}    
-        <button type="submit"> FINISH </button>
-    </form>
     <form action="{% url 'home-page' %}">
         <button type="submit"> Cancel </button>
     </form>
