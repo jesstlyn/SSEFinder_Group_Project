@@ -91,8 +91,18 @@ class CreateAccount(TemplateView):
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
-            form.save()
-            return redirect("/homePage")
+            username = request.POST['username']
+            try : 
+                member = Member.objects.get(username=username)
+            except:
+                member = None
+            #check username alr exist or not    
+            if (member != None):
+                msg = "Username already exist. Please try another username!"
+                return render(request,self.template_name,{'form':form, 'message' : msg})
+            else:
+                form.save()
+                return redirect("/homePage")
         else:
             return render(request, self.template_name, {'form': form})
 
