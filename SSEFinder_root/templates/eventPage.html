@@ -4,12 +4,14 @@
     <li>{{day}} 
     <ul>
         {% for event in events %}
+        <h1>Event Details</h1>
         <li>Venue Name: {{ event.venueName}}</li>
         <li>Venue Location: {{ event.venueLocation}}</li>
         <li>Venue Address: {{ event.venueAddress}}</li>
         <li>X : {{ event.venueXCoordinates}}</li>
         <li>Y : {{ event.venueYCoordinates}}</li>
         <li>Description : {{ event.eventDescriptipn}}</li>
+        <h1>Cases Associated</h1>
         {%for people in event.people.all%}
             <li>Case Number: {{people.caseNumber}}</li>
             <li>Name: {{people.personName}}</li>
