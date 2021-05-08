@@ -253,7 +253,7 @@ class EventDetail(TemplateView):
         end = datetime.fromisoformat(enddate).date()
         gap = datetime.fromisoformat(enddate) - datetime.fromisoformat(startdate)
         date_list = []
-        for day in range(0,gap.days):
+        for day in range(0,gap.days+1):
             new_date = datetime.fromisoformat(startdate) + timedelta(days=day)
             date_list.append(new_date)
         
@@ -273,7 +273,7 @@ class EventDetail(TemplateView):
         context['event_list'] = events 
         context['startdate'] = startdate
         context['enddate'] = enddate
-
+        
         return context
 
 
