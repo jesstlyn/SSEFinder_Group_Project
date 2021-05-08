@@ -260,8 +260,11 @@ class EventDetail(TemplateView):
             date_of_event = day.date()
             try:
                 events_in_that_day = Event.objects.filter(eventDate = date_of_event)
-                date_string = date_of_event.strftime("%Y-%m-%d")
-                events[date_string] = events_in_that_day
+                if events_in_that_day.exists():
+                    date_string = date_of_event.strftime("%Y-%m-%d")
+                    events[date_string] = events_in_that_day
+                else:
+                    continue
             except:
                 continue
 
