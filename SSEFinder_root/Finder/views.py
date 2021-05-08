@@ -5,10 +5,13 @@ from django.views.generic import TemplateView, View
 from Finder.models import Member, Case, Event, CaseEvent
 from django.contrib import messages
 from datetime import datetime,timedelta
+import config
 import json
 import requests
 import sys
 
+def setLogin():
+    config.isLogin = True
 #get data from API
 def get_data(venueName):
     xcoord = None
@@ -28,6 +31,11 @@ def get_data(venueName):
 
 class homePage(TemplateView):
     template_name = 'homePage.html'
+    def get(self, request):
+        if config.isLogin == True:
+            return render(request, self.template_name)
+        else:
+            return redirect('/')
 
 class searchCaseNumber(TemplateView):
     template_name = 'searchCaseNumber.html'
@@ -141,6 +149,7 @@ class Login(TemplateView):
                 return render(request,self.template_name,{'form':form, 'message' : msg})
             else:
                 if (password == member_details.password):
+                    setLogin()
                     return redirect('/homePage')
                 else:
                     #give message if password is wrong 
