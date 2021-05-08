@@ -260,7 +260,6 @@ class EventDetail(TemplateView):
         context = super().get_context_data(**kwargs)
 
         events = {}
-        print(date_list)
         for day in date_list:
             date_of_event = day.date()
             try:
