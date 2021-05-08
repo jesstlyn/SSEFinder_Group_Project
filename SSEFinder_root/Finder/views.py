@@ -136,6 +136,7 @@ class Login(TemplateView):
     template_name = "login.html"
 
     def get(self, request):
+        Logout()
         return render(request,self.template_name,{'form':self.form_class})
 
     def post(self, request):
@@ -177,8 +178,10 @@ class AddNewCase(TemplateView):
     template_name = "addNewCase.html"
 
     def get(self, request):
-        return render(request, self.template_name, {'form': self.form_class})
-
+        if config.isLogin == True:
+            return render(request, self.template_name, {'form': self.form_class})
+        else:
+            return redirect('/')
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
@@ -200,18 +203,21 @@ class AddNewEvent(TemplateView):
     template_name = "addNewEvent.html"
 
     def get(self, request):
-        query = self.request.GET.get('selected_event')
-        details = get_data(query)
-        for i in details:
-            if query == i['nameEN']:
-                eventSelected = i
-        print(eventSelected)
-        eventVenue = eventSelected['nameEN']
-        eventX = eventSelected['x']
-        eventY = eventSelected['y']
-        eventAddress = eventSelected['addressEN']
-        caseNumber = request.session.get('case_number')
-        return render(request, self.template_name, {'form': self.form_class, 'caseNumber':caseNumber, 'eventVenue':eventVenue, 'eventX':eventX, 'eventY':eventY, 'eventAddress':eventAddress})
+        if config.isLogin == True:
+            query = self.request.GET.get('selected_event')
+            details = get_data(query)
+            for i in details:
+                if query == i['nameEN']:
+                    eventSelected = i
+            print(eventSelected)
+            eventVenue = eventSelected['nameEN']
+            eventX = eventSelected['x']
+            eventY = eventSelected['y']
+            eventAddress = eventSelected['addressEN']
+            caseNumber = request.session.get('case_number')
+            return render(request, self.template_name, {'form': self.form_class, 'caseNumber':caseNumber, 'eventVenue':eventVenue, 'eventX':eventX, 'eventY':eventY, 'eventAddress':eventAddress})
+        else:
+            return redirect('/')
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -219,11 +225,6 @@ class AddNewEvent(TemplateView):
         if form.is_valid():
             query = self.request.GET.get('selected_event')
             event_date = self.request.POST.get('eventDate')
-            #inputVenueName = request.POST['venueName']
-            #print(inputVenueName)
-            #venueDetails = get_data(inputVenueName)
-            #print(venueDetails)
-
             #check if the event has already exists or not
             try : 
                 obj = Event.objects.get(venueName = query, eventDate=event_date)
@@ -242,7 +243,6 @@ class AddNewEvent(TemplateView):
                 eventY = eventSelected['y']
                 eventAddress = eventSelected['addressEN']
                 newEvent = form.save(commit=False)
-                #eventData = get_data(inputVenueName)
                 newEvent.venueName = eventVenue
                 newEvent.venueAddress = eventAddress
                 newEvent.venueXCoordinates = eventX
@@ -272,6 +272,11 @@ class AddNewEvent(TemplateView):
 
 class SearchEvent(TemplateView):
     template_name = "searchEvent.html"
+    def get(self,request):
+        if config.isLogin == True:
+            return render(request, self.template_name)
+        else:
+            return redirect('/')
     
 class EventDetail(TemplateView):
     model = Event
@@ -312,11 +317,15 @@ class EventDetail(TemplateView):
         return context
 
 class EnterEventName(TemplateView):
-    template_name = "enterEventName.html"   
+    template_name = "enterEventName.html"
+    def get(self,request):
+        if config.isLogin == True:
+            return render(request, self.template_name)
+        else:
+            return redirect('/')   
 
 class EventSelection(TemplateView):
     template_name = 'eventSelection.html'
-
     def get_context_data(self, **kwargs):
         query = self.request.GET.get('location_name')
         context = super().get_context_data(**kwargs)
