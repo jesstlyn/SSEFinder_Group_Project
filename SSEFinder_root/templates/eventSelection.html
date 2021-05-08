@@ -1,0 +1,24 @@
+<html>
+<head>
+<style>
+
+
+</style>
+</head>
+<body>
+    <form action="{% url 'addNewEvent-page' %}" method='GET' class='selectInfo'>
+        <label for='location_list' style='font-size: 30px'>Select a location:</label>
+        <br/>
+        <select size="20" name='selected_event' required='required'>
+            {% for a in allFindings %}
+            <option value="{{a.nameEN}}">
+                <div class='loc'>Location Name: {{a.nameEN}}</div>
+                <div> &nbsp; &nbsp; &nbsp;(X: {{a.x}}, &nbsp; Y:{{a.y}})</div>
+            </option>
+            {% endfor %}
+          <select>
+        <br/>
+        <input type='submit' value='Select Location'>
+    </form>
+</body>
+</html>
