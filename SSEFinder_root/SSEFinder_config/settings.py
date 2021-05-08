@@ -26,7 +26,8 @@ SECRET_KEY = 'ln4+byh6j@1=clc9v1@0lctlpqg7jlogfdk0r-f!1^jio)*lnf'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['ssefindergroupn.herokuapp.com', 'localhost', '127.0.0.1']
+
 
 
 # Application definition
@@ -49,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'SSEFinder_config.urls'
@@ -120,3 +122,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = str(BASE_DIR.joinpath('staticfiles'))
