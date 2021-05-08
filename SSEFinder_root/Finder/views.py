@@ -64,9 +64,6 @@ class caseNumberDetail(TemplateView):
         if (caseInfo == ''):
             context['message'] = "Data for case number '" + query +  "'  is not found. Please input another valid case number!"
         else:
-            # caseInfo = Case.objects.get(caseNumber = query)
-            # context['message'] = ""
-
             context['caseNumber'] =  str(caseInfo.caseNumber)
             context['personName'] = caseInfo.personName
             context['identityDocumentNumber'] = caseInfo.identityDocumentNumber
@@ -74,16 +71,15 @@ class caseNumberDetail(TemplateView):
             context['symptomsOnsetDate'] = str(caseInfo.symptomsOnsetDate)
             context['infectionConfirmationDate'] = str(caseInfo.infectionConfirmationDate)
 
-            try:
-                eventsAttended = CaseEvent.objects.filter(caseEventNumber = caseInfo)
-            except:
-                eventsAttended = ''
+            eventsAttended = CaseEvent.objects.filter(caseEventNumber = caseInfo)
             
-            if(eventsAttended == ''):
-                context['message2'] = "No events found. Please add an Event for this case"
-            else:
+            if(eventsAttended.exists()):
                 event = eventsAttended
                 context['events'] = event
+            else:
+                context['message2'] = "No events found. Please add an Event for this case! "
+                context['events'] = None
+                
         return context
 
 class CreateAccountForm(forms.ModelForm):
@@ -285,8 +281,11 @@ class EventDetail(TemplateView):
             date_of_event = day.date()
             try:
                 events_in_that_day = Event.objects.filter(eventDate = date_of_event)
-                date_string = date_of_event.strftime("%Y-%m-%d")
-                events[date_string] = events_in_that_day
+                if events_in_that_day.exists():
+                    date_string = date_of_event.strftime("%Y-%m-%d")
+                    events[date_string] = events_in_that_day
+                else:
+                    continue
             except:
                 continue
 

@@ -1,42 +1,86 @@
+
+<head>
+<style>
+    table,th, td {border:1px solid black; border-collapse: collapse;}
+</style>
+</head>
+
 {% load possible %}
 <h1>Showing all event from {{startdate}} to {{enddate}}</h1>
 <ul>
     {% for day,events in event_list.items %}
-    <ul>
-        {% for event in events %}
+    <div style="margin-top : 20px ">
         <li>{{day}}</li>
         <h1>Event Details</h1>
-        <li>Venue Name: {{ event.venueName}}</li>
-        <li>Venue Location: {{ event.venueLocation}}</li>
-        <li>Venue Address: {{ event.venueAddress}}</li>
-        <li>X : {{ event.venueXCoordinates}}</li>
-        <li>Y : {{ event.venueYCoordinates}}</li>
-        <li>Description : {{ event.eventDescriptipn}}</li>
-        <h1>Cases Associated</h1>
-        {%for people in event.people.all%}
-            <li>Case Number: {{people.caseNumber}}</li>
-            <li>Name: {{people.personName}}</li>
-            <li>Identity Document Number: {{people.identityDocumentNumber}}</li>
-            <li>Date of Birth: {{people.birthDate}}</li>
-            <li>Date of Onset: {{people.symptomsOnsetDate}}</li>
-            <li>Date Case Confirmed: {{people.infectionConfirmationDate}}</li>
-            {%infector event.eventDate people.symptomsOnsetDate as inf%}
-            {%infected event.eventDate people.symptomsOnsetDate as inf2%}
-            {% if inf%}
-            <p>Possible Infector</p>
-            {% endif %}
-            {%if inf2%}
-            <p>Possible Infected</p>
-            {% endif %}
+        {% for event in events %}
+            <table >
+                <tr>
+                    <th> Venue Name </th>
+                    <th> Venue Location </th>
+                    <th> Venue Address </th>
+                    <th> X Coord </th>
+                    <th> Y Coord </th>
+                    <th> Description </th>
+                    <th> SSE Event </th>
+                </tr>
+                <tr>
+                    <td> {{event.venueName}} </td>
+                    <td> {{event.venueLocation}} </td>
+                    <td> {{event.venueAddress}} </td>
+                    <td> {{event.venueXCoordinates}} </td>
+                    <td> {{event.venueYCoordinates}} </td>
+                    <td> {{event.eventDescriptipn}} </td>
+                    <td> {%if event.people.all.count > 6%}
+                        <p> Yes </p>
+                        {% else %}
+                        <p> No </p>
+                        {% endif %}
+                    </td></td> 
+                </tr>
+            </table>
+            <div style="margin-top: 20px">
+                <table >
+                    <tr>
+                        <th> Case Number </th>
+                        <th> Person Name </th>
+                        <th> Identity Document Number </th>
+                        <th> Date of Birth </th>
+                        <th> Date of Onset </th>
+                        <th> Date Case Confirmed </th>
+                        <th> Possible Infector </th>
+                        <th> Possible Infected </th>
+                    </tr>
+                    {%for people in event.people.all%}
+                    <tr>
+                        <td> {{people.caseNumber}} </td>
+                        <td> {{people.personName}} </td>
+                        <td> {{people.identityDocumentNumber}} </td>
+                        <td> {{people.birthDate}} </td>
+                        <td> {{people.symptomsOnsetDate}} </td>
+                        <td> {{people.infectionConfirmationDate}} </td>
+                        {%infector event.eventDate people.symptomsOnsetDate as inf%}
+                        {%infected event.eventDate people.symptomsOnsetDate as inf2%}
+                        <td> {% if inf %}
+                            <p> Yes </p>
+                            {% else %}
+                            <p> No </p>
+                            {% endif %}
+                        </td>
+                        <td> {% if inf2 %}
+                            <p> Yes </p>
+                            {% else %}
+                            <p> No </p>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </table>        
+            </div>
         {% endfor %}
-        {%if event.people.all.count > 6%}
-        <h1>SSE Event</h1>
-        {% endif %}
-        {% empty %}
-        {% endfor %}
-    </ul>
+    </div>
     {% endfor %}
 </ul>
+
 
 <form action="{% url 'searchEvent' %}" class='searchEvent'>
     <input style="float: left" type='submit' value='Search Another Date Range'>
