@@ -254,12 +254,12 @@ class AddNewEvent(TemplateView):
                 #save another persons pkey and event in the middle table here
                 obj.save()
                 case_object = Case.objects.get(caseNumber= caseNumber)
-                event = Event.objects.get(venueName=inputVenueName) #first get the object
+                event = Event.objects.get(venueName=query) #first get the object
                 event.people.add(case_object)
             if 'Finish' in request.POST:
                 return redirect('/homePage')
             else:
-                return redirect('/addNewEvent')
+                return redirect('/enterEventName')
         else:
             return render(request, self.template_name, {'form': form}) 
 
