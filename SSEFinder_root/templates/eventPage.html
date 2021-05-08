@@ -10,7 +10,7 @@
 <ul>
     {% for day,events in event_list.items %}
     <div style="margin-top : 20px ">
-        <li>{{day}}</li>
+        <li><span> <h3> Date (yyyy-mm-dd) : {{day}}</h3></li>
         <h1>Event Details</h1>
         {% for event in events %}
             <table >
@@ -76,6 +76,8 @@
                     {% endfor %}
                 </table>        
             </div>
+            <br>
+            <br>
         {% endfor %}
     </div>
     {% endfor %}
@@ -88,4 +90,8 @@
 
 <form action="{% url 'home-page' %}" class='home-page'>
     <input type='submit' value='Home'>
+</form>
+
+<form action="{% url 'login-page' %}" class='login-page'>
+    <input type='submit' value='Logout'>
 </form>

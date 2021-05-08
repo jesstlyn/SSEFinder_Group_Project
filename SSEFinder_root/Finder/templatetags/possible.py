@@ -16,7 +16,7 @@ def possible_infector(dt_event,dt_case):
 
 @register.simple_tag(name='infected')
 def possible_infected(dt_event,dt_case):
-    for i in range(2, 15): #develop symptoms 2 to 14 days after dt_event
+    for i in range(2, 15): # develop symptoms 2 to 14 days after dt_event
         new_date = dt_event + timedelta(days=i)
         if new_date == dt_case:
             return True
