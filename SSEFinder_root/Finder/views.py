@@ -64,9 +64,6 @@ class caseNumberDetail(TemplateView):
         if (caseInfo == ''):
             context['message'] = "Data for case number '" + query +  "'  is not found. Please input another valid case number!"
         else:
-            # caseInfo = Case.objects.get(caseNumber = query)
-            # context['message'] = ""
-
             context['caseNumber'] =  str(caseInfo.caseNumber)
             context['personName'] = caseInfo.personName
             context['identityDocumentNumber'] = caseInfo.identityDocumentNumber
@@ -74,16 +71,15 @@ class caseNumberDetail(TemplateView):
             context['symptomsOnsetDate'] = str(caseInfo.symptomsOnsetDate)
             context['infectionConfirmationDate'] = str(caseInfo.infectionConfirmationDate)
 
-            try:
-                eventsAttended = CaseEvent.objects.filter(caseEventNumber = caseInfo)
-            except:
-                eventsAttended = ''
+            eventsAttended = CaseEvent.objects.filter(caseEventNumber = caseInfo)
             
-            if(eventsAttended == ''):
-                context['message2'] = "No events found. Please add an Event for this case"
-            else:
+            if(eventsAttended.exists()):
                 event = eventsAttended
                 context['events'] = event
+            else:
+                context['message2'] = "No events found. Please add an Event for this case! "
+                context['events'] = None
+                
         return context
 
 class CreateAccountForm(forms.ModelForm):
