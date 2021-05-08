@@ -1,17 +1,30 @@
 <html>
 <head>
+<style>
+.case_number{
+    position: absolute;
+    top: 40%;
+    left: 40%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
 
+.caseLabel{
+    font-size: 30px;
+}
+</style>
 </head>
 <body>
     <div>{{aaaa}}</div>
-    <form action=" " method='POST' class='case_number' name='case_number'>
+    <form action=" " method='POST' class='case_number' name='case_number' style="text-align: center">
         {% csrf_token %}
-        <label for='caseNumber'>Please select a case number:</label>
+        <label for='caseNumber' class='caseLabel'>Please select a case number:</label>
         <select id="caseNumber" name="case_number">
             {% for a in allInfo %}
             <option value="{{a.caseNumber}}">{{a.caseNumber}}</option>
             {% endfor %}
         </select>
+        <br/>
         <input type='submit' name='ViewDetails' value='View Details'>
         <input type='submit' name='AddEvent' value='Add Event'>
     </form>
