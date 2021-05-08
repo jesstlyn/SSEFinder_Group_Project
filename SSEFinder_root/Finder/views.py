@@ -5,10 +5,15 @@ from django.views.generic import TemplateView, View
 from Finder.models import Member, Case, Event, CaseEvent
 from django.contrib import messages
 from datetime import datetime,timedelta
+import config
 import json
 import requests
 import sys
 
+def setLogin():
+    config.isLogin = True
+def Logout():
+    config.isLogin = False
 #get data from API
 def get_data(venueName):
     xcoord = None
@@ -28,6 +33,11 @@ def get_data(venueName):
 
 class homePage(TemplateView):
     template_name = 'homePage.html'
+    def get(self, request):
+        if config.isLogin == True:
+            return render(request, self.template_name)
+        else:
+            return redirect('/')
 
 class searchCaseNumber(TemplateView):
     template_name = 'searchCaseNumber.html'
@@ -37,8 +47,11 @@ class searchCaseNumber(TemplateView):
         return context
 
     def get(self, request):
-        allInfo = Case.objects.filter()
-        return render(request, self.template_name, {'allInfo':allInfo})
+        if config.isLogin == True:
+            allInfo = Case.objects.filter()
+            return render(request, self.template_name, {'allInfo':allInfo})
+        else:
+            return redirect('/')
 
     def post(self, request):
         if 'AddEvent' in request.POST:
@@ -141,6 +154,7 @@ class Login(TemplateView):
                 return render(request,self.template_name,{'form':form, 'message' : msg})
             else:
                 if (password == member_details.password):
+                    setLogin()
                     return redirect('/homePage')
                 else:
                     #give message if password is wrong 
@@ -204,6 +218,7 @@ class AddNewEvent(TemplateView):
         caseNumber = request.session.get('case_number')
         if form.is_valid():
             query = self.request.GET.get('selected_event')
+            event_date = self.request.POST.get('eventDate')
             #inputVenueName = request.POST['venueName']
             #print(inputVenueName)
             #venueDetails = get_data(inputVenueName)
@@ -211,7 +226,7 @@ class AddNewEvent(TemplateView):
 
             #check if the event has already exists or not
             try : 
-                obj = Event.objects.get(venueName = query)
+                obj = Event.objects.get(venueName = query, eventDate=event_date)
                 print(obj)
             except : 
                 obj = None
@@ -235,7 +250,7 @@ class AddNewEvent(TemplateView):
                 newEvent.numberOfPeople = 1
                 newEvent.save()
                 case_object = Case.objects.get(caseNumber= caseNumber)
-                event = Event.objects.get(venueName=query) #first get the object
+                event = Event.objects.get(venueName=query, eventDate=event_date) #first get the object
                     
                 event.people.add(case_object)
             else:
@@ -245,7 +260,7 @@ class AddNewEvent(TemplateView):
                 #save another persons pkey and event in the middle table here
                 obj.save()
                 case_object = Case.objects.get(caseNumber= caseNumber)
-                event = Event.objects.get(venueName=query) #first get the object
+                event = Event.objects.get(venueName=query, eventDate=event_date) #first get the object
                 event.people.add(case_object)
             if 'Finish' in request.POST:
                 return redirect('/homePage')

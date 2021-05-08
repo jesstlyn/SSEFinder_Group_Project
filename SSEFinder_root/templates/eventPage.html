@@ -1,9 +1,11 @@
 
 <head>
-<style>
-    table,th, td {border:1px solid black; border-collapse: collapse;}
-</style>
+    <style>
+        table,th, td {border:1px solid black; border-collapse: collapse;}
+    </style>
 </head>
+      
+<body>
 
 {% load possible %}
 <h1>Showing all event from {{startdate}} to {{enddate}}</h1>
@@ -30,7 +32,8 @@
                     <td> {{event.venueXCoordinates}} </td>
                     <td> {{event.venueYCoordinates}} </td>
                     <td> {{event.eventDescriptipn}} </td>
-                    <td> {%if event.people.all.count > 6%}
+                    {%SSECheck event as SS%}
+                    <td> {%if SS%}
                         <p> Yes </p>
                         {% else %}
                         <p> No </p>
@@ -58,7 +61,7 @@
                         <td> {{people.birthDate}} </td>
                         <td> {{people.symptomsOnsetDate}} </td>
                         <td> {{people.infectionConfirmationDate}} </td>
-                        {%infector event.eventDate people.symptomsOnsetDate as inf%}
+                        {%infector event.eventDate people.symptomsOnsetDate people.infectionConfirmationDate as inf%}
                         {%infected event.eventDate people.symptomsOnsetDate as inf2%}
                         <td> {% if inf %}
                             <p> Yes </p>
@@ -94,4 +97,4 @@
 
 <form action="{% url 'login-page' %}" class='login-page'>
     <input type='submit' value='Logout'>
-</form>
+</body>
