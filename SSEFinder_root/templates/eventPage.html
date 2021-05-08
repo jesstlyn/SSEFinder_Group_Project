@@ -2,9 +2,9 @@
 <h1>Showing all event from {{startdate}} to {{enddate}}</h1>
 <ul>
     {% for day,events in event_list.items %}
-    <li>{{day}}</li>
     <ul>
         {% for event in events %}
+        <li>{{day}}</li>
         <h1>Event Details</h1>
         <li>Venue Name: {{ event.venueName}}</li>
         <li>Venue Location: {{ event.venueLocation}}</li>
@@ -32,6 +32,7 @@
         {%if event.people.all.count > 6%}
         <h1>SSE Event</h1>
         {% endif %}
+        {% empty %}
         {% endfor %}
     </ul>
     {% endfor %}
