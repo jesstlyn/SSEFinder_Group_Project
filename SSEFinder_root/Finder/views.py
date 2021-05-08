@@ -12,6 +12,8 @@ import sys
 
 def setLogin():
     config.isLogin = True
+def Logout():
+    config.isLogin = False
 #get data from API
 def get_data(venueName):
     xcoord = None
@@ -45,8 +47,11 @@ class searchCaseNumber(TemplateView):
         return context
 
     def get(self, request):
-        allInfo = Case.objects.filter()
-        return render(request, self.template_name, {'allInfo':allInfo})
+        if config.isLogin == True:
+            allInfo = Case.objects.filter()
+            return render(request, self.template_name, {'allInfo':allInfo})
+        else:
+            return redirect('/')
 
     def post(self, request):
         if 'AddEvent' in request.POST:

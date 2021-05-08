@@ -30,7 +30,8 @@
                     <td> {{event.venueXCoordinates}} </td>
                     <td> {{event.venueYCoordinates}} </td>
                     <td> {{event.eventDescriptipn}} </td>
-                    <td> {%if event.people.all.count > 6%}
+                    {%SSECheck event as SS%}
+                    <td> {%if SS%}
                         <p> Yes </p>
                         {% else %}
                         <p> No </p>
