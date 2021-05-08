@@ -218,6 +218,7 @@ class AddNewEvent(TemplateView):
         caseNumber = request.session.get('case_number')
         if form.is_valid():
             query = self.request.GET.get('selected_event')
+            event_date = self.request.POST.get('eventDate')
             #inputVenueName = request.POST['venueName']
             #print(inputVenueName)
             #venueDetails = get_data(inputVenueName)
@@ -225,7 +226,7 @@ class AddNewEvent(TemplateView):
 
             #check if the event has already exists or not
             try : 
-                obj = Event.objects.get(venueName = query)
+                obj = Event.objects.get(venueName = query, eventDate=event_date)
                 print(obj)
             except : 
                 obj = None
@@ -249,7 +250,7 @@ class AddNewEvent(TemplateView):
                 newEvent.numberOfPeople = 1
                 newEvent.save()
                 case_object = Case.objects.get(caseNumber= caseNumber)
-                event = Event.objects.get(venueName=query) #first get the object
+                event = Event.objects.get(venueName=query, eventDate=event_date) #first get the object
                     
                 event.people.add(case_object)
             else:
@@ -259,7 +260,7 @@ class AddNewEvent(TemplateView):
                 #save another persons pkey and event in the middle table here
                 obj.save()
                 case_object = Case.objects.get(caseNumber= caseNumber)
-                event = Event.objects.get(venueName=query) #first get the object
+                event = Event.objects.get(venueName=query, eventDate=event_date) #first get the object
                 event.people.add(case_object)
             if 'Finish' in request.POST:
                 return redirect('/homePage')
