@@ -58,7 +58,7 @@
                         <td> {{people.birthDate}} </td>
                         <td> {{people.symptomsOnsetDate}} </td>
                         <td> {{people.infectionConfirmationDate}} </td>
-                        {%infector event.eventDate people.symptomsOnsetDate as inf%}
+                        {%infector event.eventDate people.symptomsOnsetDate people.infectionConfirmationDate as inf%}
                         {%infected event.eventDate people.symptomsOnsetDate as inf2%}
                         <td> {% if inf %}
                             <p> Yes </p>
