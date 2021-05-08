@@ -36,3 +36,11 @@
     </ul>
     {% endfor %}
 </ul>
+
+<form action="{% url 'searchEvent' %}" class='searchEvent'>
+    <input style="float: left" type='submit' value='Search Another Date Range'>
+</form>
+
+<form action="{% url 'home-page' %}" class='home-page'>
+    <input type='submit' value='Home'>
+</form>
