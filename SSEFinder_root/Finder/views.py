@@ -136,6 +136,7 @@ class Login(TemplateView):
     template_name = "login.html"
 
     def get(self, request):
+        Logout()
         return render(request,self.template_name,{'form':self.form_class})
 
     def post(self, request):
