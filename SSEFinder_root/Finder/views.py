@@ -20,14 +20,14 @@ def get_data(venueName):
     url = "https://geodata.gov.hk/gs/api/v1.0.0/locationSearch"
     response = requests.get(url=url,params={"q": venueName})
     response_json = response.json()
-    for i in response_json:
-        if i['nameEN'] == venueName:
-            xcoord = i['x']
-            ycoord = i['y']
-            address = i['addressEN']
-    print(response_json)
-    mylist = [xcoord, ycoord, address]
-    return mylist
+    # for i in response_json:
+    #     if i['nameEN'] == venueName:
+    #         xcoord = i['x']
+    #         ycoord = i['y']
+    #         address = i['addressEN']
+    # print(response_json)
+    # mylist = [xcoord, ycoord, address]
+    return response_json
 
 class homePage(TemplateView):
     template_name = 'homePage.html'
@@ -51,7 +51,7 @@ class searchCaseNumber(TemplateView):
     def post(self, request):
         if 'AddEvent' in request.POST:
             request.session['case_number'] = self.request.POST.get('case_number')
-            return redirect("/addNewEvent")
+            return redirect("/enterEventName")
         if 'ViewDetails' in request.POST:
             request.session['case_number'] = self.request.POST.get('case_number')
             return redirect("/caseNumberDetail")
@@ -185,7 +185,7 @@ class AddNewCase(TemplateView):
 class AddNewEventForm(forms.ModelForm):
     class Meta:
         model = Event
-        exclude = ['venueAddress','venueXCoordinates','venueYCoordinates', 'people']
+        exclude = ['venueAddress','venueXCoordinates','venueYCoordinates', 'people', 'venueName']
 
     def clean_code(self):
         return self.cleaned_data['venueName'].upper()
@@ -195,35 +195,56 @@ class AddNewEvent(TemplateView):
     template_name = "addNewEvent.html"
 
     def get(self, request):
+        query = self.request.GET.get('selected_event')
+        details = get_data(query)
+        for i in details:
+            if query == i['nameEN']:
+                eventSelected = i
+        print(eventSelected)
+        eventVenue = eventSelected['nameEN']
+        eventX = eventSelected['x']
+        eventY = eventSelected['y']
+        eventAddress = eventSelected['addressEN']
         caseNumber = request.session.get('case_number')
-        return render(request, self.template_name, {'form': self.form_class, 'caseNumber':caseNumber})
+        return render(request, self.template_name, {'form': self.form_class, 'caseNumber':caseNumber, 'eventVenue':eventVenue, 'eventX':eventX, 'eventY':eventY, 'eventAddress':eventAddress})
 
     def post(self, request):
         form = self.form_class(request.POST)
         caseNumber = request.session.get('case_number')
         if form.is_valid():
-            inputVenueName = request.POST['venueName']
-            print(inputVenueName)
-            venueDetails = get_data(inputVenueName)
-            print(venueDetails)
+            query = self.request.GET.get('selected_event')
+            #inputVenueName = request.POST['venueName']
+            #print(inputVenueName)
+            #venueDetails = get_data(inputVenueName)
+            #print(venueDetails)
 
             #check if the event has already exists or not
             try : 
-                obj = Event.objects.get(venueName = inputVenueName)
+                obj = Event.objects.get(venueName = query)
                 print(obj)
             except : 
                 obj = None
 
             if (obj == None) :#not exist
+                details = get_data(query)
+                for i in details:
+                    if query == i['nameEN']:
+                        eventSelected = i
+                print(eventSelected)
+                eventVenue = eventSelected['nameEN']
+                eventX = eventSelected['x']
+                eventY = eventSelected['y']
+                eventAddress = eventSelected['addressEN']
                 newEvent = form.save(commit=False)
-                eventData = get_data(inputVenueName)
-                newEvent.venueAddress = venueDetails[2]
-                newEvent.venueXCoordinates = venueDetails[0]
-                newEvent.venueYCoordinates = venueDetails[1]
+                #eventData = get_data(inputVenueName)
+                newEvent.venueName = eventVenue
+                newEvent.venueAddress = eventAddress
+                newEvent.venueXCoordinates = eventX
+                newEvent.venueYCoordinates = eventY
                 newEvent.numberOfPeople = 1
                 newEvent.save()
                 case_object = Case.objects.get(caseNumber= caseNumber)
-                event = Event.objects.get(venueName=inputVenueName) #first get the object
+                event = Event.objects.get(venueName=query) #first get the object
                     
                 event.people.add(case_object)
             else:
@@ -240,9 +261,9 @@ class AddNewEvent(TemplateView):
             else:
                 return redirect('/addNewEvent')
         else:
-            return render(request, self.template_name, {'form': form})
-            
-    
+            return render(request, self.template_name, {'form': form}) 
+
+
 class SearchEvent(TemplateView):
     template_name = "searchEvent.html"
     
@@ -284,5 +305,20 @@ class EventDetail(TemplateView):
         
         return context
 
+class EnterEventName(TemplateView):
+    template_name = "enterEventName.html"   
 
+class EventSelection(TemplateView):
+    template_name = 'eventSelection.html'
 
+    def get_context_data(self, **kwargs):
+        query = self.request.GET.get('location_name')
+        context = super().get_context_data(**kwargs)
+        allFindings = get_data(query)
+        listSize = len(allFindings)
+        print(listSize)
+        print(allFindings)
+        context['allFindings'] = allFindings
+        context['listSize'] = listSize
+
+        return context

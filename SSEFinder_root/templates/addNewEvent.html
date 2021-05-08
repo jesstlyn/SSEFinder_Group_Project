@@ -3,7 +3,12 @@
     <img  src="https://drive.google.com/uc?export=view&id=1FrIT_PAYstpBZ_XyupytyYuU2IV7UKiY" alt="SSEFinder logo" width="100%" height="150">
 </div>    
 <div style="text-align:left; margin-left:35%">
-    <h1><u> Adding New Event... </u></h1>
+    <h1><u> Adding New Event for Case Number {{caseNumber}}... </u></h1>
+    <div>Venue Name: {{eventVenue}}</div>
+    <div>Venue X Coordinetes: {{eventX}}</div>
+    <div>Venue Y Coordinetes: {{eventY}}</div>
+    <div>Event Address: {{eventAddress}}</div>
+
     <div>
         <form action="" method="POST">
             {% csrf_token %}

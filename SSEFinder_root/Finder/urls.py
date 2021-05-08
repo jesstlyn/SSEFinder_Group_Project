@@ -11,4 +11,6 @@ urlpatterns = [
     path('createAccount/', views.CreateAccount.as_view(), name='createAccount-page'),
     path('searchEvent/', views.SearchEvent.as_view(),name='searchEvent'),
     path('eventDetail/', views.EventDetail.as_view(), name='eventDetail'),
+    path('eventSelection/', views.EventSelection.as_view(), name='eventSelection'),
+    path('enterEventName/', views.EnterEventName.as_view(), name='enterEventName'),
     ]
