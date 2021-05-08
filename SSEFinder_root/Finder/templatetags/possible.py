@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta
 from django import template
+from django.forms.models import model_to_dict
+
 
 register = template.Library()
 
@@ -24,3 +26,19 @@ def possible_infected(dt_event,dt_case):
         else:
             continue
     return False
+
+@register.simple_tag(name='SSECheck')
+def SSE(event):
+    event_dict = model_to_dict(event)
+    people = event_dict['people']
+    no_of_infected = 0 
+    no_of_infectors = 0
+    for p in people:
+        person_dict = model_to_dict(p)
+        print(person_dict)
+        if possible_infected(event_dict['eventDate'], person_dict['symptomsOnsetDate']):
+            no_of_infected+=1
+    if no_of_infected >= 6:
+        return True
+    else:
+        return False
